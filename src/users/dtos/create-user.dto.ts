@@ -16,10 +16,12 @@ export class CreateUserDto {
 
     @IsEmail()      //this decorator checks whether the value is a valid email format
     @IsNotEmpty()
+    @MaxLength(96)
     email: string;
 
     @IsString()
     @IsNotEmpty()
     @MinLength(8)
+    @MaxLength(96)
     password: string;
 }

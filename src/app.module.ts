@@ -4,10 +4,27 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Users } from './users/users.entity';
+import { Posts } from './posts/posts.entity';
 
 @Module({
-  imports: [UsersModule,PostsModule, AuthModule],
+  imports: [UsersModule, PostsModule, AuthModule,
+    TypeOrmModule.forRootAsync({
+      imports: [],
+      inject: [],
+      useFactory: () => ({
+        type: 'postgres',
+        entities: [Users, Posts],
+        synchronize: true,
+        port: 5432,
+        username: 'postgres',
+        password: 'root',
+        host: 'localhost',
+        database: 'Lms',
+      }),
+    })],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

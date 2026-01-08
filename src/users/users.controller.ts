@@ -16,15 +16,13 @@ export class UsersController {
     public getUsers(
         @Param() GetUsersParamDto: GetUsersParamDto,
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-        @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number) 
-    {
+        @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number) {
         return this.usersService.findAll(GetUsersParamDto, page, limit);
     }
 
     @Post()
-    public createUser(
-        @Body() createUserDto: CreateUserDto) {
-        console.log(createUserDto);
+    public createUser(@Body() createUserDto: CreateUserDto) {
+        return this.usersService.createUser(createUserDto);
     }
 
     @Patch()
