@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './users/users.entity';
 import { Posts } from './posts/posts.entity';
+import { TagsModule } from './tags/tags.module';
+import { Tags } from './tags/tags.entity';
 
 @Module({
   imports: [UsersModule, PostsModule, AuthModule,
@@ -15,15 +17,17 @@ import { Posts } from './posts/posts.entity';
       inject: [],
       useFactory: () => ({
         type: 'postgres',
-        entities: [Users, Posts],
+        // entities: [Users, Posts, Tags],
+        autoLoadEntities: true,
         synchronize: true,
         port: 5432,
         username: 'postgres',
-        password: 'root',
+        password: 'root', 
         host: 'localhost',
         database: 'Lms',
       }),
-    })],
+    }),
+    TagsModule],
   controllers: [AppController],
   providers: [AppService],
 })

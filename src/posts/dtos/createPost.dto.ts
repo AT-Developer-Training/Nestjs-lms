@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsEnum, IsOptional, IsDate, IsArray, MinLength, Matches, IsJSON, IsUrl, IsISO31661Alpha2, IsISO8601, min, MaxLength} from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum, IsOptional, IsDate, IsArray, MinLength, Matches, IsJSON, IsUrl, IsISO31661Alpha2, IsISO8601, min, MaxLength, IsInt} from 'class-validator';
 import { PostType } from '../Enums/postTypeEnum';
 import { PostStatus } from '../Enums/postStatusEnum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -72,12 +72,19 @@ export class CreatePostDto {
     publishOn?: Date;
 
     @ApiPropertyOptional({
-        description: 'ISO 8601 representing the post\'s target audience',
-        example: ["nestJs", "typescript"],
+        description: "'Array of ID's Of Tags'",
+        example: [1, 2],
     })
     @IsOptional()
     @IsArray()
-    @IsString({ each: true })
-    @MinLength(3, { each: true })
-    tags?: string[];
+    @IsInt({ each: true })
+    tags?: number[];
+
+    @ApiProperty({
+        description: 'ID of the user creating the post',
+        example: 1,
+    })
+    @IsNotEmpty()
+    @IsInt()
+    userId: number;
 }

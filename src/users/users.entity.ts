@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Posts } from "src/posts/posts.entity";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 
 @Entity()
 export class Users {
@@ -17,7 +18,7 @@ export class Users {
         length: 20,
         nullable: true,
     })
-    lastName: string; 
+    lastName: string;
 
     @Column({
         type: 'varchar',
@@ -33,4 +34,16 @@ export class Users {
         nullable: false,
     })
     password: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
+
+    @OneToMany(() => Posts, post => post.user)
+    posts: Posts[];
 }

@@ -14,10 +14,9 @@ export class UsersService {
         private usersRepository: Repository<Users>,
     ) { }
 
-    public async createUser(createUserDto: CreateUserDto)
-    {
-        const existingUser = await this.usersRepository.findOne({where: {email: createUserDto.email}});
-        if(existingUser) {
+    public async createUser(createUserDto: CreateUserDto) {
+        const existingUser = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
+        if (existingUser) {
             throw new Error('User with this email already exists');
         }
         let newUser = this.usersRepository.create(createUserDto);
@@ -25,38 +24,28 @@ export class UsersService {
         return newUser;
     }
 
-    public findAll(
-        GetUsersParamDto: GetUsersParamDto, 
+    public async findAll(
+        GetUsersParamDto: GetUsersParamDto,
         page: number,
         limit: number
     ) {
-        return [
-            {
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com"
-            },
-            {
-                firstName: "raj",
-                lastName: "Doe",
-                email: "raj.doe@example.com"
-            },
-            {
-                firstName: "rahul",
-                lastName: "Doe",
-                email: "rahul.doe@example.com"
-            }
-        ];
+        let users = await this.usersRepository.find({
+            relations: ['posts'],
+        });
+        return users;
     }
 
-    public findOneById(id: number) {
-        return [
-            {
-                id: 1,
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com"
-            },
-        ];
+    public async findOneById(id: number) {
+        return await this.usersRepository.findOneBy({ id });
+    }
+
+    public async delete(id: number) {
+
+        let user = await this.usersRepository.findOneBy({ id });
+        this.usersRepository.softDelete(id);
+
+        return {
+            message: "User deleted successfully with id " + id,
+        };
     }
 }

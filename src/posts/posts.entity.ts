@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToMany, JoinTable } from "typeorm";
+import { PostType } from "./Enums/postTypeEnum";
+import { PostStatus } from "./Enums/postStatusEnum";
+import { Users } from "src/users/users.entity";
+import { Tags } from "src/tags/tags.entity";
+
 
 @Entity()
 export class Posts {
@@ -15,53 +20,68 @@ export class Posts {
 
     @Column({
         type: 'enum',
-        enum: ['POST', 'PAGE', 'STORY', 'SERIES'],
+        enum: PostType,
         nullable: false,
+        default: PostType.POST,
     })
-    postType: string;
+    postType: PostType;
 
     @Column({
         type: 'varchar',
         length: 100,
         nullable: false,
+        unique: true,
     })
     slug: string;
 
     @Column({
         type: 'enum',
-        enum: ['DRAFT', 'PUBLISHED', 'ARCHIVED'],
+        enum: PostStatus,
         nullable: false,
+        default: PostStatus.DRAFT,
     })
-    status: string;
-
-    @Column({
-        type: 'varchar',
-        length: 100,
-        nullable: true,
-    })
-    content: string;
-
-    @Column({
-        type: 'json',
-        nullable: true,
-    })
-    schema: string;
+    status: PostStatus;
 
     @Column({
         type: 'text',
         nullable: true,
     })
-    featuredImageUrl: string;
+    content?: string;
 
     @Column({
-        type: 'date',
+        type: 'text',
         nullable: true,
     })
-    publishOn: Date;
+    schema?: string;
 
     @Column({
         type: 'varchar',
         nullable: true,
     })
-    tags: string[];
+    featuredImageUrl?: string;
+
+    @Column({
+        type: 'timestamp',
+        nullable: true,
+    })
+    publishOn?: Date;
+
+    @ManyToMany(() => Tags)
+    @JoinTable()
+    tags?: Tags[];
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
+
+    @ManyToOne(() => Users, user => user.posts, {
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn({ name: 'userId' })
+    user: Users;
 }
