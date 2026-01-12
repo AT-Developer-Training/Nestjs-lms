@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Posts } from "src/posts/posts.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Tags {
@@ -40,6 +41,13 @@ export class Tags {
         nullable: true,
     })
     featuredImageUrl?: string;
+
+    // Many-to-Many relationship with Posts
+    @ManyToMany(() => Posts, (post) => post.tags, {
+        onDelete: 'CASCADE'
+    })
+    posts: Posts[];
+
 
     @CreateDateColumn()
     createdAt: Date;

@@ -5,16 +5,22 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from './users/users.entity';
-import { Posts } from './posts/posts.entity';
 import { TagsModule } from './tags/tags.module';
-import { Tags } from './tags/tags.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
+const ENV = process.env.NODE_ENV;
 @Module({
-  imports: [UsersModule, PostsModule, AuthModule,
+  imports: [
+    UsersModule,
+    PostsModule,
+    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath : !ENV ? '.env' : `.env.${ENV}`,
+    }),
     TypeOrmModule.forRootAsync({
-      imports: [],
-      inject: [],
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: () => ({
         type: 'postgres',
         // entities: [Users, Posts, Tags],
@@ -22,7 +28,7 @@ import { Tags } from './tags/tags.entity';
         synchronize: true,
         port: 5432,
         username: 'postgres',
-        password: 'root', 
+        password: 'root',
         host: 'localhost',
         database: 'Lms',
       }),

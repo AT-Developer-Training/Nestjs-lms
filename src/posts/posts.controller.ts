@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { PostsService } from './providers/posts.service';
 import { CreatePostDto } from './dtos/createPost.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { UpdatePostDto } from './dtos/updatePost.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -16,5 +17,22 @@ export class PostsController {
     @Post('/create')
     public createPost(@Body() createPostDto: CreatePostDto) {
         return this.postsService.createPost(createPostDto);
+    }
+
+    @Get('/findAll')
+    public findAllPosts() {
+        return this.postsService.findAllPosts();
+    }
+
+    @Patch('/update')
+    public updatePost(@Body() updatePostDto: UpdatePostDto) {
+
+        console.log('UpdatePostDto received in controller:', updatePostDto);
+        return this.postsService.updatePost(updatePostDto);
+    }
+
+    @Delete('/delete/:id')
+    public deletePost(@Param('id') id: number) {
+        return this.postsService.deletePost(id);
     }
 }
